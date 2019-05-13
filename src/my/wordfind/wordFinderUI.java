@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package my.wordfind;
 
 import java.util.*;
@@ -94,7 +88,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                 put(line, root);
                 line = bufferreader.readLine();
             }
-            //return r;
         }
 
         private void put(String key, Node x) {
@@ -681,7 +674,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         }
         for (int i = 1; i < 5; i++) {
             for (int j = 1; j < 5; j++) {
-                vertices[i][j] = ((i-1)*4) + (j-1); // this works
+                vertices[i][j] = ((i-1)*4) + (j-1);
             }
         }
         //now populate adjacent
@@ -899,8 +892,8 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     
     private void findWords() {
         
-        // This method cycles through every combination of letters, using "adjacent." 
-        // If a prefix is not valid, the code breaks off and searches the next possible combination.
+        // This method cycles through every combination of letters, using the LinkedList called "adjacent." 
+        // If a prefix is not valid, the code breaks and starts searching the next possible combination.
         String lw = randomLetters.toLowerCase();
         for (int i = 0; i < 16; i++) {
             String prefix = String.valueOf(lw.charAt(i));
