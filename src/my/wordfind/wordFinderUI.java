@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  * @author JoeWallace
  */
 public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
-    
     // class variables
     static LinkedList<String> selected = new LinkedList(); // holds letters selected during the game
     static String results = ""; // to show the user the words that have been played
@@ -32,7 +31,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     static long startTime;
     javax.swing.Timer t = new javax.swing.Timer(1000, this); // timer to regulate the game clock
     static LinkedList<LinkedList<Integer>> adjacent = new LinkedList(); // keeps track of which squares are touching which others
-    static LinkedList<Integer> currentSquares = new LinkedList<>(); // keeps track of which squares are selected
+    static LinkedList<Integer> currentSquares = new LinkedList(); // keeps track of which squares are selected
     javax.swing.JTextPane squares[] = new javax.swing.JTextPane[16]; // array to hold the JTextPane variables
     
     /** Creates new form wordFinderUI
@@ -59,7 +58,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
 
     private class wordTrie {
-        
         /*
         This class implements a Trie to compress all the words in the dictionary.
         It allows fast searching and retrieval.
@@ -661,7 +659,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
     
     private void assignAdjacent() {
-        
         //create vertices, an array of arrays with buffers
         int[][] vertices = new int[6][6];
         for (int i = 0; i < 6; i++) {
@@ -689,7 +686,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                 int v7 = vertices[i][j-1];
                 int v8 = vertices[i][j+1];
                 int[] potential = {v1, v2, v3, v4, v5, v6, v7, v8};
-                LinkedList<Integer> next_to = new LinkedList<>();
+                LinkedList<Integer> next_to = new LinkedList();
                 for (int k : potential) {
                     if (k != -1) next_to.add(k);
                 }
@@ -698,10 +695,8 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         }
     }
     
-    private void setText() {
-        
+    private void setText() { 
         // This method is called in the constructor to set up the game board. It is also called at the start of a new game.
-        
         String[] cubes = {"AAEEGN", "ELRTTY", "AOOTTW", "ABBJOO", "EHRTVW", "CIMOTU", "DISTTY", "EIOSST", "DELRVY", "ACHOPS", "HIMNQU", "EEINSU", "EEGHNW", "AFFKPS", "HLNNRZ", "DEILRX"};
         Random r = new Random();
         for (int i = 0; i < 16; i++) {
@@ -729,7 +724,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
     
     private void selectLetters(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectLetters
-        
         // This method controls the selection of letters by the user.
         // It makes sure the selection is legal.
         if (gameInProgress) {
@@ -769,7 +763,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
     
     private void submitSelection(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitSelection
-        
         String word = "";
         for (String s : selected) {
             word = word + s;
@@ -792,7 +785,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_submitSelection
         
     private void unselectLetters(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_unselectLetters
-        
         Color c = new Color(238, 238, 238);
         for (JTextPane j : squares) {
             j.setBackground(c);
@@ -806,7 +798,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_unselectLetters
 
     private void startGame(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startGame
-        
         // This method starts a new game. It uses the timer to display the game clock, which counts down from 3 minutes.
         if (gameInProgress == false) gameInProgress = true;
         gameCounter++;
@@ -839,7 +830,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_stopGame
     
     private void displayResults(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_displayResults
-        
         // When the "All Possible Words" button is pressed, display all possible words
         JTextPane display = jTextPane21;
         Collections.sort(masterWordList);
@@ -850,8 +840,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         display.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\">"+allWords+"</p></html>");
     }//GEN-LAST:event_displayResults
 
-    private void endGame() {
-        
+    private void endGame() {        
         gameInProgress = false;
         t.stop();
         JTextPane displayScore = jTextPane3;
@@ -891,8 +880,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
     
     private void findWords() {
-        
-        // This method cycles through every combination of letters, using the LinkedList called "adjacent." 
+        // This method cycles through every combination of letters, using the LinkedList "adjacent." 
         // If a prefix is not valid, the code breaks and starts searching the next possible combination.
         String lw = randomLetters.toLowerCase();
         for (int i = 0; i < 16; i++) {
@@ -911,7 +899,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }
     
     private void recurseWords(String prefix, int vertex) {
-        
         // This a recursive helper method for findWords
         String lw = randomLetters.toLowerCase();
         if (wt.contains(prefix, wt.root) && prefix.length() > 2) {
@@ -935,7 +922,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
