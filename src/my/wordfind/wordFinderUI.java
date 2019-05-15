@@ -66,7 +66,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         private static final int R = 26;
 
         private final  Node root = new Node();
-        private int n;
         private final String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
         private class Node {
@@ -89,7 +88,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         }
 
         private void put(String key, Node x) {
-
             int d = 0;
             while (d != key.length()) {
                 int c = alphabet.indexOf(key.charAt(d));
@@ -100,7 +98,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                 d++;
             }
             if (x.val == null) {
-                n++;
                 x.val = key;
             }
         }
