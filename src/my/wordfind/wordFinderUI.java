@@ -845,7 +845,6 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_displayResults
 
     private void endGame() {
-        //this needs to reset masterWordList and playedWords, maybe other variables?
         t.stop();
         gameInProgress = false;
         JTextPane displayScore = jTextPane3;
