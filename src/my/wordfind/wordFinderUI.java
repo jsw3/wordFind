@@ -653,6 +653,10 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         squares[13] = jTextPane18;
         squares[14] = jTextPane11;
         squares[15] = jTextPane13;
+        
+        for (javax.swing.JTextPane square : squares) {
+            square.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
+        }
     }
     
     private void assignAdjacent() {
@@ -795,31 +799,34 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_unselectLetters
 
     private void startGame(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startGame
-        // This method starts a new game. It uses the timer to display the game clock, which counts down from 3 minutes.
-        if (gameInProgress == false) gameInProgress = true;
-        gameCounter++;
-        JTextPane j1 = jTextPane3;
-        JTextPane j2 = jTextPane20;
-        JTextPane j3 = jTextPane21;
-        j1.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
-        j2.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
-        j3.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
-        
-        Color c = new Color(238, 238, 238);
-        for (JTextPane j : squares) {
-            j.setBackground(c);
+        // This method starts a new game if no game has been started. It uses the timer to display the game clock, which counts down from 3 minutes.
+        if (gameInProgress == false) {
+            gameInProgress = true;
+            gameCounter++;
+            JTextPane j1 = jTextPane3;
+            JTextPane j2 = jTextPane20;
+            JTextPane j3 = jTextPane21;
+            j1.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
+            j2.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
+            j3.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
+
+            Color c = new Color(238, 238, 238);
+            for (JTextPane j : squares) {
+                j.setBackground(c);
+            }
+
+            playedWords.clear();
+            userScore = 0;
+            possibleScore = 0;
+            JTextPane timer = jTextPane2;
+            timer.setText("3:00");
+            JTextPane words = jTextPane1;
+            results = "";
+            words.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
+            if (gameCounter > 1) setText();
+            startTime = System.currentTimeMillis();
+            t.start();
         }
-        
-        userScore = 0;
-        possibleScore = 0;
-        JTextPane timer = jTextPane2;
-        timer.setText("3:00");
-        JTextPane words = jTextPane1;
-        results = "";
-        words.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
-        if (gameCounter > 1) setText();
-        startTime = System.currentTimeMillis();
-        t.start();
     }//GEN-LAST:event_startGame
 
     private void stopGame(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopGame
@@ -837,9 +844,10 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         display.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\">"+allWords+"</p></html>");
     }//GEN-LAST:event_displayResults
 
-    private void endGame() {        
-        gameInProgress = false;
+    private void endGame() {
+        //this needs to reset masterWordList and playedWords, maybe other variables?
         t.stop();
+        gameInProgress = false;
         JTextPane displayScore = jTextPane3;
         // The code below calculates and displays the user's score and the potential score
         // Scores: 3/4 letters = 1; 5 letters = 2; 6 letters = 3; 7 letters = 5; 8 or more letters = 11;
@@ -879,6 +887,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     private void findWords() {
         // This method cycles through every combination of letters, using the LinkedList "adjacent." 
         // If a prefix is not valid, the code breaks and starts searching the next possible combination.
+        if (gameCounter > 0) masterWordList.clear();
         String lw = randomLetters.toLowerCase();
         for (int i = 0; i < 16; i++) {
             String prefix = String.valueOf(lw.charAt(i));
