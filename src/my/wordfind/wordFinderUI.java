@@ -121,6 +121,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextPane4 = new javax.swing.JTextPane();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -168,6 +169,17 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         jScrollPane21 = new javax.swing.JScrollPane();
         jTextPane21 = new javax.swing.JTextPane();
         jButton5 = new javax.swing.JButton();
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(100, 100));
@@ -508,7 +520,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(71, 71, 71)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane21, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -565,11 +577,11 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton4)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addComponent(jScrollPane20))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                    .addComponent(jScrollPane20, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -721,6 +733,8 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         JTextPane timer = jTextPane2;
         timer.setText("3:00");
         
+        getContentPane().setBackground(new java.awt.Color(54, 98, 102));
+        
         findWords(); // this searches the trie, using adjacent, for all possible words in the randomLetters string
     }
     
@@ -771,7 +785,9 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         JTextPane j = jTextPane1;
         JTextPane error = jTextPane3;
         // Test the submitted word. If it's a word, add to results; if not, display an error message
-        if (wt.contains(word.toLowerCase(), wt.root)) {
+        // Actually, could this use masterWordList? No need to search the entire trie?
+        if (masterWordList.contains(word.toLowerCase())) {
+        //if (wt.contains(word.toLowerCase(), wt.root)) {
             if (!playedWords.contains(word)) {
                 playedWords.add(word);
                 results = results + word + "<br>";
@@ -886,12 +902,13 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     private void findWords() {
         // This method cycles through every combination of letters, using the LinkedList "adjacent." 
         // If a prefix is not valid, the code breaks and starts searching the next possible combination.
-        if (gameCounter > 0) masterWordList.clear();
+        masterWordList.clear(); 
+        for (int i = 0; i < 16; i++) visited[i] = false;
         String lw = randomLetters.toLowerCase();
         for (int i = 0; i < 16; i++) {
             String prefix = String.valueOf(lw.charAt(i));
             visited[i] = true;
-            for (int vertex: adjacent.get(i)) {
+            for (int vertex : adjacent.get(i)) {
                 prefix = prefix + String.valueOf(lw.charAt(vertex));
                 if (isPrefix(prefix)) {
                     visited[vertex] = true;
@@ -900,6 +917,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                 }
                 prefix = prefix.substring(0, prefix.length()-1);
             }
+            visited[i] = false;
         }
     }
     
@@ -944,6 +962,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
