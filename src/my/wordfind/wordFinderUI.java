@@ -26,8 +26,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     static LinkedList<String> masterWordList = new LinkedList();
     static LinkedList<String> playedWords = new LinkedList();
     static boolean gameInProgress = false;
-    static boolean[] visited = new boolean[16]; // randomLetters will always be 16 letters
-    wordTrie wt = new wordTrie();
+    Trie wt = new Trie();
     static long startTime;
     javax.swing.Timer t = new javax.swing.Timer(1000, this); // timer to regulate the game clock
     static LinkedList<LinkedList<Integer>> adjacent = new LinkedList(); // keeps track of which squares are touching which others
@@ -48,69 +47,12 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         JTextPane timer = jTextPane2;
         long elapsed = (System.currentTimeMillis() - startTime);
         long elapsedSeconds = elapsed / 1000;
-        long time = 180 - elapsedSeconds;
+        long time = 3600 - elapsedSeconds;
         long minute = time/60;
         long seconds = (time-(minute*60));
         timer.setText(String.format("%d", minute)+":"+String.format("%02d", seconds));
         if (timer.getText().equals("0:00")) {
             endGame();
-        }
-    }
-
-    private class wordTrie {
-        /*
-        This class implements a Trie to compress all the words in the dictionary.
-        It allows fast searching and retrieval.
-        */
-    
-        private static final int R = 26;
-
-        private final  Node root = new Node();
-        private final String alphabet = "abcdefghijklmnopqrstuvwxyz";
-
-        private class Node {
-            private String val;
-            private final Node[] next = new Node[R];
-        }
-
-        public wordTrie() throws Exception {
-            createTrie();
-        }
-
-        private void createTrie() throws Exception {
-            String line;
-            BufferedReader bufferreader = new BufferedReader(new FileReader("src/my/wordFind/words.txt"));
-            line = bufferreader.readLine();
-            while (line != null) {
-                put(line, root);
-                line = bufferreader.readLine();
-            }
-        }
-
-        private void put(String key, Node x) {
-            int d = 0;
-            while (d != key.length()) {
-                int c = alphabet.indexOf(key.charAt(d));
-                if (x.next[c] == null) {
-                    x.next[c] = new Node();
-                }
-                x = x.next[c];
-                d++;
-            }
-            if (x.val == null) {
-                x.val = key;
-            }
-        }
-
-        private boolean contains(String word, Node x) {
-            int d = 0;
-            while (d != word.length()) {
-                int c = alphabet.indexOf(word.charAt(d));
-                if (x.next[c] != null) x = x.next[c];
-                d++;
-            }
-            if (x.val != null) return (x.val.equals(word));
-            else return false;
         }
     }
     
@@ -565,8 +507,8 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton1)
@@ -731,7 +673,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
             squares[i].getAccessibleContext().setAccessibleName(String.format("%d", i));
         }
         JTextPane timer = jTextPane2;
-        timer.setText("3:00");
+        timer.setText("60:00");
         
         getContentPane().setBackground(new java.awt.Color(54, 98, 102));
         
@@ -792,6 +734,16 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
                 playedWords.add(word);
                 results = results + word + "<br>";
                 j.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\">"+results+"</p></html>");
+                Color c = new Color(238, 238, 238);
+                for (JTextPane j1 : squares) {
+                    j1.setBackground(c);
+                }
+                selected.clear();
+                currentSelection = "";
+                JTextPane clearWindow = jTextPane20;
+                clearWindow.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
+                JTextPane e = jTextPane3;
+                e.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
             } else {
                 error.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\">"+word+" has already been played</p></html>");
                 
@@ -800,7 +752,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
             error.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\">"+word+" is not a word</p></html>");
         }
     }//GEN-LAST:event_submitSelection
-        
+ 
     private void unselectLetters(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_unselectLetters
         Color c = new Color(238, 238, 238);
         for (JTextPane j : squares) {
@@ -835,7 +787,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
             userScore = 0;
             possibleScore = 0;
             JTextPane timer = jTextPane2;
-            timer.setText("3:00");
+            timer.setText("60:00");
             JTextPane words = jTextPane1;
             results = "";
             words.setText("<html><p style=\"font-family: Lucida Grande; font-size:14pt\"></p></html>");
@@ -863,6 +815,7 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
     private void endGame() {
         t.stop();
         gameInProgress = false;
+        selected.clear();
         JTextPane displayScore = jTextPane3;
         // The code below calculates and displays the user's score and the potential score
         // Scores: 3/4 letters = 1; 5 letters = 2; 6 letters = 3; 7 letters = 5; 8 or more letters = 11;
@@ -887,32 +840,20 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         displayScore.setText("<html><p style=\"margin-top:35; margin-left:45; font-family: Lucida Grande; font-size:13pt\">Your score: "+score1+"<br>Possible score: "+score2+"</p></html>");
     }
     
-    private boolean isPrefix(String prefix) {
-        int d = 0;
-        wordFinderUI.wordTrie.Node r = wt.root;
-        while (d < prefix.length()) {
-            int c = wt.alphabet.indexOf(String.valueOf(prefix.charAt(d)));
-            r = r.next[c];
-            if (r == null) return false;
-            d++;
-        }
-        return true;
-    }
-    
     private void findWords() {
         // This method cycles through every combination of letters, using the LinkedList "adjacent." 
         // If a prefix is not valid, the code breaks and starts searching the next possible combination.
         masterWordList.clear(); 
-        for (int i = 0; i < 16; i++) visited[i] = false;
+        boolean[] visited = new boolean[16];
         String lw = randomLetters.toLowerCase();
         for (int i = 0; i < 16; i++) {
             String prefix = String.valueOf(lw.charAt(i));
             visited[i] = true;
             for (int vertex : adjacent.get(i)) {
                 prefix = prefix + String.valueOf(lw.charAt(vertex));
-                if (isPrefix(prefix)) {
+                if (wt.isPrefix(prefix)) {
                     visited[vertex] = true;
-                    recurseWords(prefix, vertex);
+                    recurseWords(prefix, visited, vertex);
                     visited[vertex] = false;
                 }
                 prefix = prefix.substring(0, prefix.length()-1);
@@ -921,18 +862,18 @@ public class wordFinderUI extends javax.swing.JFrame implements ActionListener {
         }
     }
     
-    private void recurseWords(String prefix, int vertex) {
+    private void recurseWords(String prefix, boolean[] visited, int vertex) {
         // This a recursive helper method for findWords
         String lw = randomLetters.toLowerCase();
-        if (wt.contains(prefix, wt.root) && prefix.length() > 2) {
+        if (wt.isWord(prefix) && prefix.length() > 2) {
             if (!masterWordList.contains(prefix)) masterWordList.add(prefix);
         }
         for (int val : adjacent.get(vertex)) {
             if (visited[val] == false) {
                 prefix = prefix + String.valueOf(lw.charAt(val));
-                if (isPrefix(prefix)) {
+                if (wt.isPrefix(prefix)) {
                     visited[val] = true;
-                    recurseWords(prefix, val);
+                    recurseWords(prefix, visited, val);
                     prefix = prefix.substring(0, prefix.length()-1);
                     visited[val] = false;
                 } else prefix = prefix.substring(0, prefix.length()-1);
